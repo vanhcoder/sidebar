@@ -11,7 +11,7 @@ import {
   UsersIcon,
   VideosIcon,
 } from "./icons";
-
+import { siderbarContext} from '../contexts/sidebarContext.tsx';
 const menuItems = [
   { id: 1, label: "Home", icon: HomeIcon, link: "/" },
   { id: 2, label: "Manage Posts", icon: ArticleIcon, link: "/posts" },
@@ -21,10 +21,11 @@ const menuItems = [
 
 const Sidebar = () => {
   const [toggleCollapse, setToggleCollapse] = useState(false);
-  const [isCollapsible, setIsCollapsible] = useState(false);
-
+  const [ data , dispatch ]  = React.useContext(siderbarContext);
+  const { isCollapsible} = data
   const router = useRouter();
 
+  console.log(data);
   const activeMenu = useMemo(
     () => menuItems.find((menu) => menu.link === router.pathname),
     [router.pathname]
@@ -54,19 +55,16 @@ const Sidebar = () => {
     );
   };
 
-  const onMouseOver = () => {
-    setIsCollapsible(!isCollapsible);
-  };
-
   const handleSidebarToggle = () => {
     setToggleCollapse(!toggleCollapse);
+    dispatch({
+      type:'toggle',
+    })
   };
 
   return (
     <div
       className={wrapperClasses}
-      onMouseEnter={onMouseOver}
-      onMouseLeave={onMouseOver}
       style={{ transition: "width 300ms cubic-bezier(0.2, 0, 0, 1) 0s" }}
     >
       <div className="flex flex-col">
@@ -81,14 +79,12 @@ const Sidebar = () => {
               Logo
             </span>
           </div>
-          {isCollapsible && (
             <button
               className={collapseIconClasses}
               onClick={handleSidebarToggle}
             >
               <CollapsIcon />
             </button>
-          )}
         </div>
 
         <div className="flex flex-col items-start mt-24">
